@@ -1,0 +1,36 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main  # Trigger on commits to the main branch
+  pull_request:
+    branches:
+      - main  # Trigger on pull requests to the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Java (Maven requires Java)
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'  # Use Java 11 or higher
+          distribution: 'temurin'
+
+      # Build the project using Maven
+      - name: Build with Maven
+        run: mvn clean package
+
+      # Upload the WAR file as an artifact (optional)
+      - name: Upload WAR file
+        uses: actions/upload-artifact@v3
+        with:
+          name: my-webapp
+          path: target/*.war
